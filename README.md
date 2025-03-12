@@ -1,9 +1,16 @@
 - `python -m venv venv`
+- `source venv/Scripts/activate`
 - `pip install python-dotenv`
 - `pip install requests`
 - `pip install fastapi`
 - `pip install "uvicorn[standard]"`
 - `pip install beautifulsoup4`
+- `pip install openai`
+
+- [LangChain](https://python.langchain.com/docs/tutorials/rag/)
+    - OpenAI -> OpenAI -> In-memory
+
+---
 
 - 터미널1: fastapi
     - `source venv/Scripts/activate`

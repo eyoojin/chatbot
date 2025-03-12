@@ -5,12 +5,14 @@ from dotenv import load_dotenv
 from typing import Union
 from fastapi import FastAPI, Request
 
-from utils import kospi
+from utils import kospi, openai, langchain
 
 app = FastAPI()
 
 load_dotenv()
 TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+os.environ['OPENAI_API_KEY'] = OPENAI_API_KEY
 URL = f'https://api.telegram.org/bot{TOKEN}'
 
 
@@ -24,14 +26,22 @@ async def read_root(request: Request): # async: 비동기적 함수
     if text[0] == '/': # 키워드로 대답
         if text == '/lotto':
             numbers = random.sample(range(1, 46), 6)
-            output = str(sorted(numbers))
+            output = '로또 번호를 추천해드릴게요.\n' + str(sorted(numbers)) + ' 어때요?\n행운을 빌어요!'
         elif text == '/kospi':
-            output = kospi()
+            output = '현재 코스피는 ' + kospi() + '입니다.'
+        elif text == '/menu':
+            menu = random.choice(['한식', '중식', '일식', '양식', '분식'])
+            if menu == '한식':
+                korean = random.choice(['김치찌개', '제육볶음', '된장찌개', '순대국밥'])
+                output = '오늘은 ' + str(menu) + '의 ' + str(korean) + '을(를) 먹어보세요!'
+
+            else:
+                output = '오늘은 ' + str(menu) + '을 먹어보세요!'
         else:
-            output = 'X'
+            output = '지원하지 않는 키워드예요!'
 
     else: # 모든 대답
-        output = '지원하지 않는 기능입니다.'
+        output = langchain(text)
 
     requests.get(f'{URL}/sendMessage?chat_id={user_id}&text={output}')
 
